@@ -2,54 +2,45 @@ import React from "react"
 import * as tf from "@tensorflow/tfjs";
 import * as cocossd from "@tensorflow-models/coco-ssd";
 import Webcam from "react-webcam";
-
+import { drawRect } from "./utilities"
 function App() {
+
   const webcamRef = React.useRef(null);
   const canvasRef = React.useRef(null);
   const cocoSSD = async () => {
     const model = await cocossd.load();
     setInterval(() => {
       detect(model);
-    }, 10);
+    }, 1000);
   }
   const detect = async (net) => {
     if (
-      typeof webcamRef.current !== "undefined" &&
+      typeof webcamRef.current !== undefined &&
       webcamRef.current !== null &&
-      webcamRef.current.video.readyState == 4
+      webcamRef.current.video.readyState === 4
     ) {
       // get video props 
-      const video = webcamRef.current.video;
-      const videoWidth = webcamRef.current.video.videoWidth;
-      const videoHeight = webcamRef.current.video.videoHeight;
-      // set viddeo width and height 
-      webcamRef.current.video.height = videoHeight;
-      webcamRef.current.video.width = videoWidth;
+      const { video } = webcamRef.current;
+      const { videoWidth, videoHeight } = video;
       // set canvas width and height 
       canvasRef.current.width = videoWidth;
       canvasRef.current.height = videoHeight;
       // draw mesh
       let obj = await net.detect(video);
-      console.log(obj);
       const ctx = canvasRef.current.getContext("2d");
-
+      drawRect(obj, ctx)
     }
   }
   React.useEffect(() => cocoSSD(), [])
   return (
     <div className="App">
       <header className="App-header">
+        <h2>Object Recognition JS</h2>
         <Webcam
+          className="border"
           ref={webcamRef}
           muted={true}
           style={{
-            position: "absolute",
-            marginLeft: "auto",
-            marginRight: "auto",
-            left: 0,
-            right: 0,
-            textAlign: "center",
-            zindex: 9,
             width: 640,
             height: 480,
           }}
