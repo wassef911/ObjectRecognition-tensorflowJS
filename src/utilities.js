@@ -10,7 +10,7 @@ export const drawRect = (detections, ctx) => {
 
         ctx.beginPath()
         ctx.fillText(text, x, y)
-        ctx.rect(x, y, width, height)
+        ctx.rect(x, y, width * 0.8, height * 0.8)
         ctx.stroke()
     })
 }

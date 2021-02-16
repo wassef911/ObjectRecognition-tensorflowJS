@@ -3,16 +3,11 @@ import * as tf from "@tensorflow/tfjs";
 import * as cocossd from "@tensorflow-models/coco-ssd";
 import Webcam from "react-webcam";
 import { drawRect } from "./utilities"
-function App() {
 
+function App() {
   const webcamRef = React.useRef(null);
   const canvasRef = React.useRef(null);
-  const cocoSSD = async () => {
-    const model = await cocossd.load();
-    setInterval(() => {
-      detect(model);
-    }, 1000);
-  }
+
   const detect = async (net) => {
     if (
       typeof webcamRef.current !== undefined &&
@@ -28,10 +23,17 @@ function App() {
       // draw mesh
       let obj = await net.detect(video);
       const ctx = canvasRef.current.getContext("2d");
-      drawRect(obj, ctx)
+      drawRect(obj, ctx);
     }
   }
-  React.useEffect(() => cocoSSD(), [])
+  React.useEffect(() => {
+    cocossd.load().then((model) => {
+      setInterval(() => {
+        detect(model);
+      }, 1000);
+    });
+
+  }, [])
   return (
     <div className="App">
       <header className="App-header">
