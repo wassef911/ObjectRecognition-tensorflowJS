@@ -30,7 +30,7 @@ function App() {
     cocossd.load().then((model) => {
       setInterval(() => {
         detect(model);
-      }, 1000);
+      }, 10);
     });
 
   }, [])
